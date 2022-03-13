@@ -264,6 +264,7 @@ app.post('/getProductDetails', (req, res) =>{
     var pid = req.body.pid;
     
     productDetails(pid, res)
+    res.end()
 })
 
 app.listen(8080, () =>{
