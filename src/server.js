@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+app.use(express.static(__dirname + '/../public'));
 const bodyParser = require('body-parser')
 const Web3 = require('web3')
 
@@ -215,26 +216,54 @@ const abi = [
 const publicAddress = "0x8Df204057d8AC537451Bb177A76538ae235eB33d"
 const privateAddress = "c64f1e67d90af269ab19c94e0722503c9423634e1a13b2850897879ec44f4460"
 
-app.post('/submitData', (req, res) => {
-    var partyName = req.body.party;
-    var supervisorName = req.body.name;
-    var productName = req.body.productname;
-    var productID = req.body.productID;
-    var quantity = req.body.quantity;
-    var date = req.body.date;
-    var price = req.body.price;
+// app.post('/submitData', (req, res) => {
+//     var partyName = req.body.party;
+//     var supervisorName = req.body.name;
+//     var productName = req.body.productname;
+//     var productID = req.body.productID;
+//     var quantity = req.body.quantity;
+//     var date = req.body.date;
+//     var price = req.body.price;
+
+// 	const networkId = await web3.eth.net.getId();    //Provider is of which network - Rinkeby(4)
+//     const myContract = await new web3.eth.Contract(abi, contractAddress);  //Connection of web3 library with smartContract
+
+//     const tx = myContract.methods.getData(pid)
+//     const gas = await tx.estimateGas({ from : publicAddress })
+//     const gasPrice = await web3.eth.getGasPrice();
+//     const data = tx.encodeABI();
+//     const nonce = await web3.eth.getTransactionCount(publicAddress);
+
+//     const signedTx = await web3.eth.accounts.signTransaction({
+//         to: myContract.options.address,
+//         data,
+//         gasPrice,
+//         gas,
+//         nonce,
+//         chainId: networkId
+//     }, privateAddress)
+
+//     const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+//     res.send(receipt)
 
 
-    // if(partyName != "MFG"){
-    //     res.render('index', {add:true})
-    // } 
+//     // if(partyName != "MFG"){
+//     //     res.render('index', {add:true})
+//     // } 
 
-    res.send(partyName +"  "+ supervisorName +" Supply "+ productName+" price "+ price +" of quantity "+quantity)
-    res.end()
-})
+//     res.send(partyName +"  "+ supervisorName +" Supply "+ productName+" price "+ price +" of quantity "+quantity)
+//     res.end()
+// })
 
 app.get('/getData', (req, res) =>{
     res.render('getdata')
+})
+
+app.post('/getProductDetails', (req, res) =>{
+    var pid = req.body.pid;
+	console.log("Get product details")
+    productDetails(pid, res)
+
 })
 
 productDetails = async(pid, res) => {
@@ -260,14 +289,7 @@ productDetails = async(pid, res) => {
     res.send(receipt)
 }
 
-app.post('/getProductDetails', (req, res) =>{
-    var pid = req.body.pid;
-    
-    productDetails(pid, res)
-    
-})
-
 app.listen(8080, () =>{
-    console.log("Server is up an running at localhost:8000")
+    console.log("Server is up an running at localhost:8080")
 })
 
