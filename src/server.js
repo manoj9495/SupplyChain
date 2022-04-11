@@ -13,8 +13,21 @@ app.get('/', (req, res) => {
     res.render('index', {name:""}) //
 })
 
-const contractAddress = "0x44f7C01E2Fff454c78bAb7AE99C9287566b7b989"
+const contractAddress = "0xd9AEF72e466fA0572F8ecCDE67db83aED5e1DAA1"
 const abi = [
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "add",
+		"type": "event"
+	},
 	{
 		"anonymous": false,
 		"inputs": [
@@ -80,7 +93,7 @@ const abi = [
 				"type": "string"
 			}
 		],
-		"name": "getMsg",
+		"name": "dte",
 		"type": "event"
 	},
 	{
@@ -145,23 +158,69 @@ const abi = [
 		"type": "function"
 	},
 	{
+		"anonymous": false,
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "add",
-				"type": "address"
-			}
-		],
-		"name": "getMessage",
-		"outputs": [
-			{
+				"indexed": false,
 				"internalType": "string",
 				"name": "",
 				"type": "string"
 			}
 		],
-		"stateMutability": "nonpayable",
-		"type": "function"
+		"name": "par",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "pri",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "prodID",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"name": "prodName",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "quan",
+		"type": "event"
 	},
 	{
 		"inputs": [
@@ -211,6 +270,19 @@ const abi = [
 		],
 		"stateMutability": "nonpayable",
 		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"name": "supName",
+		"type": "event"
 	}
 ]
 const publicAddress = "0x8Df204057d8AC537451Bb177A76538ae235eB33d"
@@ -270,24 +342,53 @@ productDetails = async(pid, res) => {
     const networkId = await web3.eth.net.getId();    //Provider is of which network - Rinkeby(4)
     const myContract = await new web3.eth.Contract(abi, contractAddress);  //Connection of web3 library with smartContract
 
-    const tx = myContract.methods.getData(pid)
+	const tx = myContract.methods.getData(pid)
     const gas = await tx.estimateGas({ from : publicAddress })
     const gasPrice = await web3.eth.getGasPrice();
     const data = tx.encodeABI();
-    const nonce = await web3.eth.getTransactionCount(publicAddress);
-
+    let nonce = await web3.eth.getTransactionCount(publicAddress);
+	nonce += 9
+	let newGas = parseInt(gasPrice)+10
     const signedTx = await web3.eth.accounts.signTransaction({
-        to: myContract.options.address,
+    to: myContract.options.address,
         data,
-        gasPrice,
+		newGas,
         gas,
         nonce,
         chainId: networkId
     }, privateAddress)
 
-    const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
-    res.send(receipt)
+	try{
+		web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+		.on('transactionHash', function(hash){
+			console.log("New hash ", hash)
+		})
+		.then(receipt=>{
+			res.send(hex_to_ascii(receipt.logs[1].data) +"\n"+hex_to_ascii(receipt.logs[2].data)+"\n"+hex_to_ascii(receipt.logs[3].data)+"\n"+hex_to_ascii(receipt.logs[4].data)+"\n"+hex_to_ascii(receipt.logs[5].data)+"\n"+hex_to_ascii(receipt.logs[6].data)+"\n"+hex_to_ascii(receipt.logs[7].data)+"\n"+hex_to_ascii(receipt.logs[8].data)+"\n")
+		})
+		.catch(err=>{
+			console.log("error on transaction")
+			const receipt = null;
+			res.send(err.toString())
+			
+		})
+	}
+	catch(err) {
+		console.log("error on transaction")
+		const receipt = null;
+		res.send(err.toString())
+	}
 }
+
+function hex_to_ascii(str1)
+ {
+	var hex  = str1.toString();
+	var str = '';
+	for (var n = 0; n < hex.length; n += 2) {
+		str += String.fromCharCode(parseInt(hex.substr(n, 2), 16));
+	}
+	return str;
+ }
 
 app.listen(8080, () =>{
     console.log("Server is up an running at localhost:8080")
