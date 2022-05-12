@@ -1,4 +1,5 @@
 const express = require('express')
+const path = require('path')
 const app = express()
 app.use(express.static(__dirname + '/../public'));
 const bodyParser = require('body-parser')
@@ -7,7 +8,8 @@ const Web3 = require('web3')
 const web3 = new Web3('https://rinkeby.infura.io/v3/3987bbdc8cf141918317a827d42ac907') //Link is provider.
 
 app.use(bodyParser.urlencoded({ extended: false }))
-app.set('view engine', 'ejs');
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
 
 app.get('/', (req, res) => {
     res.render('index', {name:""}) //
