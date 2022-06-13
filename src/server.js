@@ -5,7 +5,8 @@ app.use(express.static(__dirname + '/../public'));
 const bodyParser = require('body-parser')
 const Web3 = require('web3')
 
-const web3 = new Web3('https://rinkeby.infura.io/v3/3987bbdc8cf141918317a827d42ac907') //Link is provider.
+// const web3 = new Web3('https://rinkeby.infura.io/v3/3987bbdc8cf141918317a827d42ac907') //Link is provider.
+const web3 = new Web3('http://127.0.0.1:9545/') //Link is provider.
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.set("views", path.join(__dirname, "views"));
@@ -15,7 +16,7 @@ app.get('/', (req, res) => {
     res.render('index', {name:""}) //
 })
 
-const contractAddress = "0xd9AEF72e466fA0572F8ecCDE67db83aED5e1DAA1"
+const contractAddress = "0xe45ECE5eAf7d627570847DfA06b3290b7cBFa911"
 const abi = [
 	{
 		"anonymous": false,
@@ -287,47 +288,51 @@ const abi = [
 		"type": "event"
 	}
 ]
-const publicAddress = "0x8Df204057d8AC537451Bb177A76538ae235eB33d"
-const privateAddress = "c64f1e67d90af269ab19c94e0722503c9423634e1a13b2850897879ec44f4460"
+const publicAddress = "0x4ef6645952b7604c9ab2b6ded35c0162d1ecf41f"
+const privateAddress = "22e34a374e72518d20c66c9ec180431172a36ddaeef46b90b0326086721e8b51"
 
-// app.post('/submitData', (req, res) => {
-//     var partyName = req.body.party;
-//     var supervisorName = req.body.name;
-//     var productName = req.body.productname;
-//     var productID = req.body.productID;
-//     var quantity = req.body.quantity;
-//     var date = req.body.date;
-//     var price = req.body.price;
+app.post('/submitData', (req, res) => {
+    submitData(req, res);
+})
 
-// 	const networkId = await web3.eth.net.getId();    //Provider is of which network - Rinkeby(4)
-//     const myContract = await new web3.eth.Contract(abi, contractAddress);  //Connection of web3 library with smartContract
+submitData = async(req, res) => {
+	var partyName = req.body.party;
+    var supervisorName = req.body.name;
+    var productName = req.body.productname;
+    var productID = req.body.productID;
+    var quantity = req.body.quantity;
+    var date = req.body.date;
+    var price = req.body.price;
 
-//     const tx = myContract.methods.getData(pid)
-//     const gas = await tx.estimateGas({ from : publicAddress })
-//     const gasPrice = await web3.eth.getGasPrice();
-//     const data = tx.encodeABI();
-//     const nonce = await web3.eth.getTransactionCount(publicAddress);
+	const networkId = await web3.eth.net.getId();    //Provider is of which network - Rinkeby(4)
+    const myContract = await new web3.eth.Contract(abi, contractAddress);  //Connection of web3 library with smartContract
 
-//     const signedTx = await web3.eth.accounts.signTransaction({
-//         to: myContract.options.address,
-//         data,
-//         gasPrice,
-//         gas,
-//         nonce,
-//         chainId: networkId
-//     }, privateAddress)
+    const tx = myContract.methods.submitData(partyName, supervisorName, productName, productID, quantity, date, price);
+    const gas = await tx.estimateGas({ from : publicAddress })
+    const gasPrice = await web3.eth.getGasPrice();
+    const data = tx.encodeABI();
+    const nonce = await web3.eth.getTransactionCount(publicAddress);
 
-//     const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
-//     res.send(receipt)
+    const signedTx = await web3.eth.accounts.signTransaction({
+        to: myContract.options.address,
+        data,
+        gasPrice,
+        gas,
+        nonce,
+        chainId: networkId
+    }, privateAddress)
+
+    const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+    res.send(receipt)
 
 
-//     // if(partyName != "MFG"){
-//     //     res.render('index', {add:true})
-//     // } 
+    // if(partyName != "MFG"){
+    //     res.render('index', {add:true})
+    // } 
 
-//     res.send(partyName +"  "+ supervisorName +" Supply "+ productName+" price "+ price +" of quantity "+quantity)
-//     res.end()
-// })
+    // res.send(partyName +"  "+ supervisorName +" Supply "+ productName+" price "+ price +" of quantity "+quantity)
+    // res.end()
+}
 
 app.get('/getData', (req, res) =>{
     res.render('getdata')
@@ -349,7 +354,6 @@ productDetails = async(pid, res) => {
     const gasPrice = await web3.eth.getGasPrice();
     const data = tx.encodeABI();
     let nonce = await web3.eth.getTransactionCount(publicAddress);
-	nonce += 9
 	let newGas = parseInt(gasPrice)+10
     const signedTx = await web3.eth.accounts.signTransaction({
     to: myContract.options.address,
