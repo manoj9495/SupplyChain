@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="assets/css/style.css" rel="stylesheet" type="text/css">
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Supply Chain</title>
+    </head>
+    <body>
+        <section class="header">
+            <h1>Supply Chain Tracking System</h1>
+            <p>Kalyani</p>
+        </section>
+        <div class="navbar">
+            <a href="contact">Contact Us</a>
+            <a href="admin">Administrator Login</a>
+            <a href="http://localhost:8080/"> Home</a>
+          </div>
+        <form>
+            <div class="container">
+                <center>  <h1> Registeration Form</h1> </center>
+                <hr>
+                <label> Firstname </label>
+                <input type="text" name="firstname" placeholder= "Firstname" size="15" required />
+                <label> Middlename: </label>
+                <input type="text" name="middlename" placeholder="Middlename" size="15" required />
+                <label> Lastname: </label>
+                <input type="text" name="lastname" placeholder="Lastname" size="15"required />
+                <div>
+                    <label>
+                        Party :
+                    </label>
+                    <select>
+                        <option value="Farmer">Farmer</option>
+                        <option value="MFG">Manufacturer</option>
+                        <option value="Wholeseller">Wholeseller</option>
+                        <option value="Logistics">Retailer</option>
+                        <option value="Retailer">Logistics</option>
+                    </select>
+                </div>
+                <div>
+                    <label>
+                         Gender :
+                    </label><br>
+                    <input type="radio" value="Male" name="gender" checked > Male
+                    <input type="radio" value="Female" name="gender"> Female
+                    <input type="radio" value="Other" name="gender"> Other
+
+            </div>
+            <label>
+                 Phone :
+            </label>
+                <input type="text" name="country code" placeholder="Country Code"  value="+91" size="2"/>
+                <input type="text" name="phone" placeholder="phone no." size="10"/ required>
+                 Current Address :
+                <textarea cols="80" rows="5" placeholder="Current Address" value="address" required></textarea>
+                <label for="email"><b>Email</b></label>
+                <input type="text" placeholder="Enter Email" name="email" required>
+                <label for="psw"><b>Password</b></label>
+                <input type="password" placeholder="Enter Password" name="psw" required>
+                <label for="psw-repeat"><b>Re-type Password</b></label>
+                <input type="password" placeholder="Retype Password" name="psw-repeat" required>
+                <label for="profile-img"><b>Upload Your Image</b></label>
+                <input type="file" name="fileToUpload" id="fileToUpload" required><br><p></p><br>
+                <label for="certificate"><b>Upload Licence Certificate</b></label>
+                <input type="file" name="fileToUpload" id="fileToUpload" required>
+                <button type="submit" class="registerbtn">Register</button>
+        </form>
+    </body>
+</html>

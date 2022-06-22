@@ -6,7 +6,7 @@ const bodyParser = require('body-parser')
 const Web3 = require('web3')
 
 // const web3 = new Web3('https://rinkeby.infura.io/v3/3987bbdc8cf141918317a827d42ac907') //Link is provider.
-const web3 = new Web3('http://127.0.0.1:9545/') //Link is provider.
+const web3 = new Web3('http://127.0.0.1:9545/') //Link is blockchain provider.
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.set("views", path.join(__dirname, "views"));
@@ -16,7 +16,18 @@ app.get('/', (req, res) => {
     res.render('index', {name:""}) //
 })
 
-const contractAddress = "0xe45ECE5eAf7d627570847DfA06b3290b7cBFa911"
+app.get('/contact', (req, res) => {
+    res.render('contact', {name:""}) //
+})
+
+app.get('/register', (req, res) => {
+    res.render('registration', {name:""}) //
+})
+
+app.get('/admin', (req, res) => {
+    res.render('admin', {name:""}) //
+})
+const contractAddress = "0xc1F65fb685dB96BDee621876E9517F8a46829CEf"
 const abi = [
 	{
 		"anonymous": false,
@@ -376,7 +387,6 @@ productDetails = async(pid, res) => {
 			console.log("error on transaction")
 			const receipt = null;
 			res.send(err.toString())
-			
 		})
 	}
 	catch(err) {
